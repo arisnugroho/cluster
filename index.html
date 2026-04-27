@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SIDAMAN — Sistem Monitoring Bendungan</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #f4f5f9;
+    --surface: #ffffff;
+    --surface2: #eef0f6;
+    --border: rgba(0,0,0,0.07);
+    --text: #18192a;
+    --text2: #525870;
+    --text3: #8b90a8;
+    --accent: #1e5ff5;
+    --accent-light: #e6eefe;
+    --sidebar-bg: #0e1525;
+    --sidebar-text: rgba(255,255,255,0.6);
+    --sidebar-hover: rgba(255,255,255,0.08);
+    --sidebar-active-bg: #1e5ff5;
+    --green: #16a34a; --green-bg: #dcfce7;
+    --amber: #c77800; --amber-bg: #fef3c7;
+    --red: #dc2626; --red-bg: #fee2e2;
+    --chart-line: #1e5ff5;
+    --chart-area: rgba(30,95,245,0.1);
+    --radius: 10px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  }
+  .dark {
+    --bg: #0c1018;
+    --surface: #141923;
+    --surface2: #1b2235;
+    --border: rgba(255,255,255,0.07);
+    --text: #e4e8f4;
+    --text2: #7e8aa0;
+    --text3: #4e5870;
+    --accent: #4d84f8;
+    --accent-light: #172140;
+    --sidebar-bg: #09101a;
+    --sidebar-text: rgba(255,255,255,0.5);
+    --sidebar-hover: rgba(255,255,255,0.07);
+    --sidebar-active-bg: #1e4fd4;
+    --green: #22c55e; --green-bg: #0f3320;
+    --amber: #f59e0b; --amber-bg: #3a1f00;
+    --red: #f87171; --red-bg: #3b0f0f;
+    --chart-line: #4d84f8;
+    --chart-area: rgba(77,132,248,0.12);
+    --shadow: 0 1px 3px rgba(0,0,0,0.3);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; font-family: 'DM Sans', system-ui, sans-serif; background: var(--bg); color: var(--text); font-size: 13px; line-height: 1.5; }
+
+  /* ── App Shell ── */
+  .app { display: flex; height: 100vh; overflow: hidden; }
+
+  /* ── Sidebar ── */
+  .sidebar { width: 210px; min-width: 210px; background: var(--sidebar-bg); display: flex; flex-direction: column; }
+  .sidebar-logo { padding: 20px 16px 16px; border-bottom: 0.5px solid rgba(255,255,255,0.06); }
+  .logo-mark { display: flex; align-items: center; gap: 9px; }
+  .logo-icon { width: 28px; height: 28px; background: var(--accent); border-radius: 7px; display: flex; align-items: center; justify-content: center; }
+  .logo-icon svg { width: 16px; height: 16px; fill: white; }
+  .logo-name { color: #fff; font-size: 14px; font-weight: 600; letter-spacing: -0.01em; }
+  .logo-sub { color: rgba(255,255,255,0.3); font-size: 10px; margin-top: 4px; line-height: 1.3; }
+  .sidebar-nav { flex: 1; padding: 12px 8px; overflow-y: auto; }
+  .nav-section-label { font-size: 10px; color: rgba(255,255,255,0.2); text-transform: uppercase; letter-spacing: 0.09em; padding: 10px 10px 5px; }
+  .nav-item { display: flex; align-items: center; gap: 9px; padding: 8px 10px; border-radius: 7px; color: var(--sidebar-text); cursor: pointer; margin-bottom: 1px; font-size: 12.5px; transition: background 0.12s, color 0.12s; user-select: none; }
+  .nav-item:hover { background: var(--sidebar-hover); color: rgba(255,255,255,0.85); }
+  .nav-item.active { background: var(--sidebar-active-bg); color: #fff; }
+  .nav-item svg { width: 15px; height: 15px; opacity: 0.7; flex-shrink: 0; }
+  .nav-item.active svg { opacity: 1; }
+  .sidebar-user { padding: 12px; border-top: 0.5px solid rgba(255,255,255,0.06); display: flex; align-items: center; gap: 9px; }
+  .user-avatar { width: 30px; height: 30px; background: var(--sidebar-active-bg); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 11px; font-weight: 600; flex-shrink: 0; }
+  .user-name { color: rgba(255,255,255,0.8); font-size: 12px; font-weight: 500; }
+  .user-role { color: rgba(255,255,255,0.3); font-size: 10px; }
+
+  /* ── Main ── */
+  .main { flex: 1; display: flex; flex-direction: column; min-width: 0; overflow: hidden; }
+  .topbar { background: var(--surface); border-bottom: 0.5px solid var(--border); height: 54px; padding: 0 22px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; box-shadow: var(--shadow); }
+  .topbar-left { display: flex; flex-direction: column; }
+  .topbar-title { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
+  .topbar-sub { font-size: 11px; color: var(--text3); }
+  .topbar-right { display: flex; align-items: center; gap: 8px; }
+  .live-badge { background: var(--green-bg); color: var(--green); font-size: 10.5px; font-weight: 500; padding: 4px 10px; border-radius: 20px; }
+  .live-dot { display: inline-block; width: 6px; height: 6px; background: var(--green); border-radius: 50%; margin-right: 5px; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+  .icon-btn { width: 32px; height: 32px; border-radius: 7px; border: 0.5px solid var(--border); background: var(--surface2); cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text2); font-size: 15px; transition: background 0.12s; }
+  .icon-btn:hover { background: var(--border); }
+
+  /* ── Content ── */
+  .content { flex: 1; overflow-y: auto; padding: 18px 22px; }
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ── Cards ── */
+  .card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
+  .card-header { padding: 12px 16px; border-bottom: 0.5px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .card-title { font-size: 13px; font-weight: 600; }
+  .card-meta { font-size: 11px; color: var(--text3); margin-top: 2px; }
+
+  /* ── Stat Cards ── */
+  .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 18px; }
+  .stat-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 14px 16px; box-shadow: var(--shadow); }
+  .stat-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; }
+  .stat-label { font-size: 11px; color: var(--text3); margin-bottom: 4px; }
+  .stat-num { font-size: 24px; font-weight: 600; letter-spacing: -0.02em; color: var(--text); line-height: 1; }
+  .stat-num small { font-size: 14px; color: var(--text3); font-weight: 400; }
+  .stat-footer { margin-top: 6px; }
+  .badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 20px; font-size: 10.5px; font-weight: 500; }
+  .badge-green { background: var(--green-bg); color: var(--green); }
+  .badge-amber { background: var(--amber-bg); color: var(--amber); }
+  .badge-red { background: var(--red-bg); color: var(--red); }
+  .badge-blue { background: var(--accent-light); color: var(--accent); }
+  .stat-change { font-size: 11px; }
+  .stat-change.neg { color: var(--red); }
+  .stat-change.warn { color: var(--amber); }
+
+  /* ── Two col layout ── */
+  .two-col { display: grid; grid-template-columns: 1fr 295px; gap: 14px; }
+
+  /* ── Map ── */
+  .map-wrap { height: 255px; overflow: hidden; border-radius: 0 0 var(--radius) var(--radius); background: var(--surface2); position: relative; }
+  .map-svg { width: 100%; height: 100%; }
+  .map-legend { display: flex; gap: 14px; padding: 8px 16px; border-top: 0.5px solid var(--border); font-size: 11px; color: var(--text3); }
+  .legend-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 5px; }
+
+  /* ── Sensor list (sidebar card) ── */
+  .sensor-list-item { display: flex; align-items: center; gap: 10px; padding: 9px 14px; border-bottom: 0.5px solid var(--border); cursor: pointer; transition: background 0.1s; }
+  .sensor-list-item:last-child { border-bottom: none; }
+  .sensor-list-item:hover { background: var(--surface2); }
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .s-name { flex: 1; font-size: 12.5px; font-weight: 500; }
+  .s-loc { font-size: 11px; color: var(--text3); }
+  .s-badge { font-size: 11px; font-weight: 500; }
+
+  /* ── Alert list ── */
+  .alert-item { display: flex; gap: 10px; padding: 10px 14px; border-bottom: 0.5px solid var(--border); }
+  .alert-item:last-child { border-bottom: none; }
+  .alert-dot { width: 7px; height: 7px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+  .alert-msg { font-size: 12px; color: var(--text); line-height: 1.45; }
+  .alert-time { font-size: 10.5px; color: var(--text3); margin-top: 2px; }
+
+  /* ── Detail page ── */
+  .breadcrumb { font-size: 11.5px; color: var(--text3); margin-bottom: 14px; }
+  .breadcrumb a { color: var(--accent); cursor: pointer; text-decoration: none; }
+  .breadcrumb a:hover { text-decoration: underline; }
+  .breadcrumb span { margin: 0 5px; }
+  .tab-row { display: flex; gap: 4px; margin-bottom: 14px; background: var(--surface2); border-radius: 8px; padding: 3px; width: fit-content; }
+  .tab { padding: 5px 13px; border-radius: 6px; font-size: 12.5px; cursor: pointer; color: var(--text3); transition: background 0.12s; }
+  .tab.active { background: var(--surface); color: var(--text); font-weight: 500; box-shadow: var(--shadow); }
+  .date-row { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+  .date-row label { font-size: 12px; color: var(--text3); }
+  input[type="date"] { padding: 5px 10px; border: 0.5px solid var(--border); border-radius: 6px; background: var(--surface); color: var(--text); font-size: 12px; font-family: inherit; }
+  .btn { padding: 6px 14px; border-radius: 6px; font-size: 12px; font-family: inherit; cursor: pointer; border: 0.5px solid var(--border); background: var(--surface2); color: var(--text2); transition: background 0.12s; }
+  .btn:hover { background: var(--border); }
+  .btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .btn.primary:hover { opacity: 0.9; }
+
+  .pos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
+  .pos-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+  .pos-card.offline { border-color: var(--amber); opacity: 0.8; }
+  .pos-header { padding: 10px 14px; border-bottom: 0.5px solid var(--border); display: flex; justify-content: space-between; align-items: flex-start; }
+  .pos-header.offline-bg { background: var(--amber-bg); }
+  .pos-title { font-size: 13px; font-weight: 600; }
+  .pos-time { font-size: 10px; color: var(--text3); margin-top: 2px; font-family: 'DM Mono', monospace; }
+  .online-badge { display: flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 500; color: var(--green); }
+  .offline-badge { display: flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 500; color: var(--amber); }
+  .param-row { display: flex; align-items: center; padding: 6px 14px; border-bottom: 0.5px solid var(--border); }
+  .param-row:last-child { border-bottom: none; }
+  .p-dot { width: 6px; height: 6px; border-radius: 50%; margin-right: 9px; flex-shrink: 0; }
+  .p-name { flex: 1; font-size: 12px; color: var(--text2); }
+  .p-val { font-size: 12px; font-weight: 500; font-family: 'DM Mono', monospace; }
+  .p-trend { font-size: 11px; min-width: 44px; text-align: right; margin-left: 8px; }
+  .up { color: var(--green); } .dn { color: var(--red); } .flat { color: var(--text3); }
+
+  .chart-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 16px; }
+  .chart-header { padding: 12px 16px; border-bottom: 0.5px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+  .period-btns { display: flex; gap: 4px; }
+  .period-btn { padding: 4px 9px; border-radius: 5px; font-size: 11px; border: 0.5px solid var(--border); background: var(--surface2); color: var(--text3); cursor: pointer; }
+  .period-btn.active { background: var(--accent-light); color: var(--accent); border-color: var(--accent); }
+  .chart-body { padding: 16px; }
+  .chart-selector { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+  .sensor-chip { padding: 3px 10px; border-radius: 20px; font-size: 11px; border: 0.5px solid var(--border); background: var(--surface2); color: var(--text3); cursor: pointer; }
+  .sensor-chip.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  /* ── Cross-section view ── */
+  .viz-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+  .viz-tabs { display: flex; gap: 6px; padding: 10px 14px; border-bottom: 0.5px solid var(--border); }
+  .viz-tab { padding: 5px 12px; border-radius: 6px; font-size: 11.5px; cursor: pointer; border: 0.5px solid var(--border); background: var(--surface2); color: var(--text3); }
+  .viz-tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  /* ── Scrollbar ── */
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<div class="app" id="app">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">
+        <div class="logo-icon">
+          <svg viewBox="0 0 16 16"><path d="M8 1L2 6v9h4v-5h4v5h4V6L8 1z"/></svg>
+        </div>
+        <div>
+          <div class="logo-name">SIDAMAN</div>
+        </div>
+      </div>
+      <div class="logo-sub">Sistem Monitoring Bendungan</div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Utama</div>
+      <div class="nav-item active" id="nav-dashboard" onclick="showPage('dashboard')">
+        <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1.5"/><rect x="9" y="1" width="6" height="6" rx="1.5"/><rect x="1" y="9" width="6" height="6" rx="1.5"/><rect x="9" y="9" width="6" height="6" rx="1.5"/></svg>
+        Dashboard
+      </div>
+      <div class="nav-item" id="nav-sensor" onclick="showPage('sensor')">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="2.5"/><path d="M8 2v1.5M8 12.5V14M2 8h1.5M12.5 8H14" stroke-linecap="round"/></svg>
+        Data Sensor
+      </div>
+      <div class="nav-item">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12L5.5 7l3 3.5 2.5-5L14 12H2z" stroke-linejoin="round"/></svg>
+        Grafik & Tren
+      </div>
+      <div class="nav-section-label">Manajemen</div>
+      <div class="nav-item">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="2" width="10" height="12" rx="1.5"/><line x1="6" y1="6" x2="10" y2="6" stroke-linecap="round"/><line x1="6" y1="9" x2="10" y2="9" stroke-linecap="round"/><line x1="6" y1="12" x2="9" y2="12" stroke-linecap="round"/></svg>
+        Data Manual
+      </div>
+      <div class="nav-item">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1a7 7 0 100 14A7 7 0 008 1z"/><path d="M8 4.5V8l2.5 1.5" stroke-linecap="round"/></svg>
+        Riwayat Data
+      </div>
+      <div class="nav-section-label">Konfigurasi</div>
+      <div class="nav-item">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="2.5"/><path d="M8 1.5V3M8 13v1.5M1.5 8H3M13 8h1.5M3.2 3.2l1 1M11.8 11.8l1 1M3.2 12.8l1-1M11.8 4.2l1-1" stroke-linecap="round"/></svg>
+        Kalibrasi Sensor
+      </div>
+      <div class="nav-item">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="6" r="3"/><path d="M1 14c0-3 2.7-5 6-5s6 2 6 5" stroke-linecap="round"/></svg>
+        Manajemen User
+      </div>
+    </nav>
+
+    <div class="sidebar-user">
+      <div class="user-avatar">AS</div>
+      <div>
+        <div class="user-name">Admin Super</div>
+        <div class="user-role">super_admin</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="main">
+    <header class="topbar">
+      <div class="topbar-left" id="topbar-info">
+        <div class="topbar-title">Dashboard</div>
+        <div class="topbar-sub">Overview monitoring real-time bendungan</div>
+      </div>
+      <div class="topbar-right">
+        <div class="live-badge" id="live-badge"><span class="live-dot"></span>Live · <span id="clock">--:--</span></div>
+        <button class="btn" onclick="toggleTheme()" title="Toggle dark/light mode" style="font-size:13px">◑</button>
+      </div>
+    </header>
+
+    <div class="content">
+
+      <!-- ═══ PAGE: DASHBOARD ═══ -->
+      <div class="page active" id="page-dashboard">
+
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="stat-icon" style="background:var(--accent-light)">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="var(--accent)"><path d="M8 1L2 6v9h4v-5h4v5h4V6L8 1z"/></svg>
+            </div>
+            <div class="stat-label">Total Bendungan</div>
+            <div class="stat-num">5</div>
+            <div class="stat-footer"><span class="badge badge-green">5 Aktif</span></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:var(--amber-bg)">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--amber)" stroke-width="1.5"><circle cx="8" cy="8" r="3"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2" stroke-linecap="round"/></svg>
+            </div>
+            <div class="stat-label">Logger Online</div>
+            <div class="stat-num">9 <small>/ 13</small></div>
+            <div class="stat-footer"><span class="badge badge-amber">4 Offline</span></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:var(--green-bg)">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--green)" stroke-width="1.5"><path d="M2 11L5.5 6.5 8.5 9.5 11 5 14 11H2z" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="stat-label">Data Hari Ini</div>
+            <div class="stat-num" style="font-size:19px">40.278</div>
+            <div class="stat-footer"><span class="stat-change neg">↓ 58% dari kemarin</span></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:var(--red-bg)">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--red)" stroke-width="1.5"><path d="M8 3v5M8 11v1.5" stroke-linecap="round"/><path d="M7 1.5L1 12.5h14L9 1.5a1.15 1.15 0 00-2 0z" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="stat-label">Alert Aktif</div>
+            <div class="stat-num" style="color:var(--amber)">34</div>
+            <div class="stat-footer"><span class="badge badge-amber">34 Warning</span></div>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div>
+            <div class="card">
+              <div class="card-header">
+                <div>
+                  <div class="card-title">Peta Lokasi Bendungan</div>
+                  <div class="card-meta">Klik marker untuk melihat detail sensor</div>
+                </div>
+              </div>
+              <div class="map-wrap">
+                <svg class="map-svg" viewBox="0 0 640 250" xmlns="http://www.w3.org/2000/svg">
+                  <rect width="640" height="250" fill="var(--surface2)"/>
+                  <!-- water hints -->
+                  <rect width="640" height="250" fill="var(--accent)" opacity="0.04"/>
+                  <!-- Bali -->
+                  <ellipse cx="95" cy="128" rx="82" ry="44" fill="var(--surface)" stroke="var(--border)" stroke-width="0.5"/>
+                  <text x="95" y="132" text-anchor="middle" font-size="9" fill="var(--text3)" font-family="DM Sans,sans-serif">Bali</text>
+                  <!-- Lombok -->
+                  <ellipse cx="215" cy="128" rx="48" ry="42" fill="var(--surface)" stroke="var(--border)" stroke-width="0.5"/>
+                  <text x="215" y="140" text-anchor="middle" font-size="9" fill="var(--text3)" font-family="DM Sans,sans-serif">Lombok</text>
+                  <!-- Sumbawa -->
+                  <ellipse cx="390" cy="130" rx="118" ry="50" fill="var(--surface)" stroke="var(--border)" stroke-width="0.5"/>
+                  <text x="390" y="134" text-anchor="middle" font-size="9" fill="var(--text3)" font-family="DM Sans,sans-serif">Sumbawa</text>
+                  <!-- Flores hint -->
+                  <ellipse cx="560" cy="128" rx="60" ry="32" fill="var(--surface)" stroke="var(--border)" stroke-width="0.5"/>
+                  <text x="560" y="132" text-anchor="middle" font-size="9" fill="var(--text3)" font-family="DM Sans,sans-serif">Flores</text>
+
+                  <!-- Markers -->
+                  <!-- Meninting (Lombok, amber) -->
+                  <g style="cursor:pointer" onclick="document.getElementById('nav-sensor').click()">
+                    <circle cx="208" cy="108" r="11" fill="#d97706" opacity="0.15"/>
+                    <circle cx="208" cy="108" r="6" fill="#d97706"/>
+                    <circle cx="208" cy="108" r="3" fill="white"/>
+                    <rect x="220" y="99" width="66" height="18" rx="4" fill="#d97706"/>
+                    <text x="253" y="112" text-anchor="middle" font-size="9" fill="white" font-family="DM Sans,sans-serif" font-weight="500">Meninting</text>
+                  </g>
+                  <!-- Pandanduri (Lombok, red) -->
+                  <g style="cursor:pointer" onclick="document.getElementById('nav-sensor').click()">
+                    <circle cx="220" cy="148" r="11" fill="#dc2626" opacity="0.15"/>
+                    <circle cx="220" cy="148" r="6" fill="#dc2626"/>
+                    <circle cx="220" cy="148" r="3" fill="white"/>
+                    <rect x="232" y="139" width="68" height="18" rx="4" fill="#dc2626"/>
+                    <text x="266" y="152" text-anchor="middle" font-size="9" fill="white" font-family="DM Sans,sans-serif" font-weight="500">Pandanduri</text>
+                  </g>
+                  <!-- Bringin Sila (Sumbawa, green) -->
+                  <g style="cursor:pointer" onclick="document.getElementById('nav-sensor').click()">
+                    <circle cx="360" cy="108" r="11" fill="#16a34a" opacity="0.15"/>
+                    <circle cx="360" cy="108" r="6" fill="#16a34a"/>
+                    <circle cx="360" cy="108" r="3" fill="white"/>
+                    <rect x="372" y="99" width="76" height="18" rx="4" fill="#16a34a"/>
+                    <text x="410" y="112" text-anchor="middle" font-size="9" fill="white" font-family="DM Sans,sans-serif" font-weight="500">Bringin Sila</text>
+                  </g>
+                  <!-- Bintang Bano (green) -->
+                  <g style="cursor:pointer" onclick="document.getElementById('nav-sensor').click()">
+                    <circle cx="400" cy="135" r="11" fill="#16a34a" opacity="0.15"/>
+                    <circle cx="400" cy="135" r="6" fill="#16a34a"/>
+                    <circle cx="400" cy="135" r="3" fill="white"/>
+                    <rect x="412" y="126" width="76" height="18" rx="4" fill="#16a34a"/>
+                    <text x="450" y="139" text-anchor="middle" font-size="9" fill="white" font-family="DM Sans,sans-serif" font-weight="500">Bintang Bano</text>
+                  </g>
+                  <!-- Tiu Suntuk (green) -->
+                  <g style="cursor:pointer" onclick="document.getElementById('nav-sensor').click()">
+                    <circle cx="340" cy="158" r="11" fill="#16a34a" opacity="0.15"/>
+                    <circle cx="340" cy="158" r="6" fill="#16a34a"/>
+                    <circle cx="340" cy="158" r="3" fill="white"/>
+                    <rect x="352" y="149" width="70" height="18" rx="4" fill="#16a34a"/>
+                    <text x="387" y="162" text-anchor="middle" font-size="9" fill="white" font-family="DM Sans,sans-serif" font-weight="500">Tiu Suntuk</text>
+                  </g>
+
+                  <!-- grid lines -->
+                  <line x1="0" y1="80" x2="640" y2="80" stroke="var(--border)" stroke-width="0.4" stroke-dasharray="5,5"/>
+                  <line x1="0" y1="175" x2="640" y2="175" stroke="var(--border)" stroke-width="0.4" stroke-dasharray="5,5"/>
+                  <line x1="320" y1="0" x2="320" y2="250" stroke="var(--border)" stroke-width="0.4" stroke-dasharray="5,5"/>
+                </svg>
+              </div>
+              <div class="map-legend">
+                <div><span class="legend-dot" style="background:#16a34a"></span>&gt;80% POS Online</div>
+                <div><span class="legend-dot" style="background:#d97706"></span>50–80% POS Online</div>
+                <div><span class="legend-dot" style="background:#dc2626"></span>&lt;50% POS Online</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:14px;">
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">Status Bendungan</div>
+                <span class="badge badge-green">5 Aktif</span>
+              </div>
+              <div>
+                <div class="sensor-list-item" onclick="showPage('sensor')">
+                  <div class="status-dot" style="background:#d97706"></div>
+                  <div style="flex:1"><div class="s-name">Meninting</div><div class="s-loc">Lombok Barat</div></div>
+                  <span class="badge badge-amber">5/8 POS</span>
+                </div>
+                <div class="sensor-list-item" onclick="showPage('sensor')">
+                  <div class="status-dot" style="background:#dc2626"></div>
+                  <div style="flex:1"><div class="s-name">Pandanduri</div><div class="s-loc">Lombok Timur</div></div>
+                  <span class="badge badge-red">2/6 POS</span>
+                </div>
+                <div class="sensor-list-item" onclick="showPage('sensor')">
+                  <div class="status-dot" style="background:#16a34a"></div>
+                  <div style="flex:1"><div class="s-name">Bringin Sila</div><div class="s-loc">Sumbawa</div></div>
+                  <span class="badge badge-green">4/4 POS</span>
+                </div>
+                <div class="sensor-list-item" onclick="showPage('sensor')">
+                  <div class="status-dot" style="background:#16a34a"></div>
+                  <div style="flex:1"><div class="s-name">Bintang Bano</div><div class="s-loc">Sumbawa Barat</div></div>
+                  <span class="badge badge-green">3/3 POS</span>
+                </div>
+                <div class="sensor-list-item" onclick="showPage('sensor')">
+                  <div class="status-dot" style="background:#16a34a"></div>
+                  <div style="flex:1"><div class="s-name">Tiu Suntuk</div><div class="s-loc">Sumbawa</div></div>
+                  <span class="badge badge-green">4/4 POS</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">Alert Terbaru</div>
+                <span class="badge badge-red">34</span>
+              </div>
+              <div>
+                <div class="alert-item">
+                  <div class="alert-dot" style="background:var(--amber)"></div>
+                  <div><div class="alert-msg">Tinggi muka air Pandanduri mendekati ambang batas HWL</div><div class="alert-time">11.32 · Pos AWLR</div></div>
+                </div>
+                <div class="alert-item">
+                  <div class="alert-dot" style="background:var(--red)"></div>
+                  <div><div class="alert-msg">Logger Meninting — 3 POS offline lebih dari 2 jam</div><div class="alert-time">10.15 · Sensor cuaca</div></div>
+                </div>
+                <div class="alert-item">
+                  <div class="alert-dot" style="background:var(--amber)"></div>
+                  <div><div class="alert-msg">Battery Pos V-Notch Bringin Sila di bawah 12V</div><div class="alert-time">09.48 · Pos V-Notch</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ PAGE: SENSOR DETAIL ═══ -->
+      <div class="page" id="page-sensor">
+        <div class="breadcrumb">
+          <a onclick="showPage('dashboard')">Dashboard</a>
+          <span>›</span>
+          <strong>Bendungan Bringin Sila</strong>
+        </div>
+
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
+          <div class="tab-row">
+            <div class="tab active">Semua POS</div>
+            <div class="tab">AWLR</div>
+            <div class="tab">V-Notch</div>
+            <div class="tab">Flowmeter</div>
+            <div class="tab">Cuaca</div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            <label style="font-size:12px;color:var(--text3)">Periode:</label>
+            <input type="date" value="2026-04-27"/>
+            <span style="font-size:12px;color:var(--text3)">–</span>
+            <input type="date" value="2026-04-27"/>
+            <button class="btn primary">Tampilkan</button>
+            <button class="btn">Export CSV</button>
+          </div>
+        </div>
+
+        <div style="font-size:11px;color:var(--text3);margin-bottom:12px;">Last update: 27 Apr 2026, 11.35 · 4 POS aktif · <span style="color:var(--green)">● Bringin Sila online</span></div>
+
+        <div class="pos-grid">
+          <!-- Pos AWLR -->
+          <div class="pos-card">
+            <div class="pos-header">
+              <div><div class="pos-title">Pos AWLR</div><div class="pos-time">27/04, 12.01</div></div>
+              <div class="online-badge"><span style="width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block"></span>Online</div>
+            </div>
+            <div class="param-row"><div class="p-dot" style="background:var(--green)"></div><span class="p-name">Battery_Logger</span><span class="p-val">14,44 V</span><span class="p-trend flat">—</span></div>
+            <div class="param-row"><div class="p-dot" style="background:var(--green)"></div><span class="p-name">Humidity_Logger</span><span class="p-val">41,7 %</span><span class="p-trend flat">—</span></div>
+            <div class="param-row"><div class="p-dot" style="background:var(--green)"></div><span class="p-name">Temp_Logger</span><span class="p-val">41 °C</span><span class="p-trend flat">—</span></div>
+            <div class="param-row"><div class="p-dot" style="background:var(--green)"></div><span class="p-name">Tinggi_Muka_Air</span><span class="p-val">116,08 mdpl</span><span class="p-trend flat">—</span></div>
+          </div>
+          <!-- Pos V-Notch -->
+          <div class="pos-card">
+            <div class="pos-header">
+              <div><div class="pos-title">Pos V-Notch</div><div class="pos-time">27/04, 11.59</div></div>
+              <div class="online-badge"><span style="width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block"></span>Online</div>
+            </div>
+            <div class="param-row"><div class="p-dot" style="background:var(--green)"></div><span class="p-name">Battery_Logger</span><span class="p-val">12,91 V</span><span class="p-trend flat">—</span></div>
+            <div class="param-row"><div class="p-dot" style="background:var(--green)"></div><span class="p-name">Debit</span><span class="p-val">21,44 l/dtk</span><span class="p-trend flat">—</span></div>
+            <div class="param-row"><div class="p-dot" style="background:var(--green)"></div><span class="p-name">Humidity_Logger</span><span class="p-val">44,8 %</span><span class="p-trend flat">—</span></div>
+            <div class="param-row"><div class="p-dot" style="background:var(--green)"></div><span class="p-name">Tinggi_Muka_Air</span><span class="p-val">21,44 cm</span><span class="p-trend flat">—</span></div>
+            <div class="param-row"><div class="p-dot" style="background:var(--green)"></div><span class="p-name">Temp_Logger</span><span class="p-val">39,4 °C</span><span class="p-trend flat">—</span></div>
+          </div>
+          <!-- Pos Weather Station (Offline) -->
+          <div class="pos-card offline">
+            <div class="pos-header offline-bg">
+              <div><div class="pos-title">Pos Weather Station</div><div class="pos-time">27/04, 11.06</div></div>
+              <div class="offline-badge"><span style="width:7px;height:7px;border-radius:50%;background:var(--amber);display:inline-block"></span>Offline</div>
+            </div>
+            <div class="param-row"><div class="p-dot" style="background:var(--text3)"></div><span class="p-name" style="color:var(--text3)">Air_Pressure</span><span class="p-val" style="color:var(--text3)">997,1 hPa</span><span class="p-trend flat">—</span></div>
+            <div class="param-row"><div class="p-dot" style="background:var(--text3)"></div><span class="p-name" style="color:var(--text3)">Air_Temperature</span><span class="p-val" style="color:var(--text3)">25,1 °C</span><span class="p-trend flat">—</span></div>
+            <div class="param-row"><div class="p-dot" style="background:var(--text3)"></div><span class="p-name" style="color:var(--text3)">Solar_Radiation</span><span class="p-val" style="color:var(--text3)">200,7 lv</span><span class="p-trend flat">—</span></div>
+            <div class="param-row"><div class="p-dot" style="background:var(--text3)"></div><span class="p-name" style="color:var(--text3)">Wind_Speed</span><span class="p-val" style="color:var(--text3)">2 m/s</span><span class="p-trend flat">—</span></div>
+            <div class="param-row"><div class="p-dot" style="background:var(--text3)"></div><span class="p-name" style="color:var(--text3)">Relative_Humidity</span><span class="p-val" style="color:var(--text3)">87 %Rh</span><span class="p-trend flat">—</span></div>
+          </div>
+        </div>
+
+        <!-- Chart -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <div>
+              <div class="card-title">Grafik Monitoring Real-time</div>
+              <div class="card-meta">Bendungan Bringin Sila · Pos AWLR · Tinggi_Muka_Air</div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+              <div class="period-btns">
+                <div class="period-btn">1J</div>
+                <div class="period-btn active">24J</div>
+                <div class="period-btn">7H</div>
+                <div class="period-btn">30H</div>
+              </div>
+              <button class="btn" style="font-size:11px">↺ Auto 15 dtk</button>
+            </div>
+          </div>
+          <div class="chart-body">
+            <div class="chart-selector">
+              <div class="sensor-chip active">Tinggi_Muka_Air</div>
+              <div class="sensor-chip">Battery_Logger</div>
+              <div class="sensor-chip">Humidity_Logger</div>
+              <div class="sensor-chip">Temp_Logger</div>
+            </div>
+            <svg viewBox="0 0 580 140" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block">
+              <defs>
+                <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="var(--chart-line)" stop-opacity="0.2"/>
+                  <stop offset="100%" stop-color="var(--chart-line)" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <!-- grid -->
+              <line x1="38" y1="10" x2="575" y2="10" stroke="var(--border)" stroke-width="0.6"/>
+              <line x1="38" y1="37" x2="575" y2="37" stroke="var(--border)" stroke-width="0.6"/>
+              <line x1="38" y1="64" x2="575" y2="64" stroke="var(--border)" stroke-width="0.6"/>
+              <line x1="38" y1="91" x2="575" y2="91" stroke="var(--border)" stroke-width="0.6"/>
+              <line x1="38" y1="118" x2="575" y2="118" stroke="var(--border)" stroke-width="0.6"/>
+              <!-- y labels -->
+              <text x="0" y="14" font-size="9" fill="var(--text3)" font-family="DM Mono,monospace">117.0</text>
+              <text x="0" y="41" font-size="9" fill="var(--text3)" font-family="DM Mono,monospace">116.5</text>
+              <text x="0" y="68" font-size="9" fill="var(--text3)" font-family="DM Mono,monospace">116.0</text>
+              <text x="0" y="95" font-size="9" fill="var(--text3)" font-family="DM Mono,monospace">115.5</text>
+              <text x="0" y="122" font-size="9" fill="var(--text3)" font-family="DM Mono,monospace">115.0</text>
+              <!-- area -->
+              <path d="M38,95 C80,88 110,74 150,68 C190,62 220,77 265,71 C310,65 340,52 385,46 C430,40 460,44 500,38 L540,34 L575,32 L575,118 L38,118 Z" fill="url(#g1)"/>
+              <!-- line -->
+              <path d="M38,95 C80,88 110,74 150,68 C190,62 220,77 265,71 C310,65 340,52 385,46 C430,40 460,44 500,38 L540,34 L575,32" fill="none" stroke="var(--chart-line)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <!-- current dot -->
+              <circle cx="575" cy="32" r="4.5" fill="var(--chart-line)"/>
+              <circle cx="575" cy="32" r="8" fill="var(--chart-line)" opacity="0.18"/>
+              <!-- tooltip hint -->
+              <rect x="524" y="12" width="70" height="18" rx="4" fill="var(--chart-line)"/>
+              <text x="559" y="25" font-size="9" fill="white" text-anchor="middle" font-family="DM Mono,monospace">116.08 mdpl</text>
+              <!-- x labels -->
+              <text x="38" y="132" font-size="9" fill="var(--text3)" text-anchor="middle" font-family="DM Sans,sans-serif">00:00</text>
+              <text x="140" y="132" font-size="9" fill="var(--text3)" text-anchor="middle" font-family="DM Sans,sans-serif">04:00</text>
+              <text x="241" y="132" font-size="9" fill="var(--text3)" text-anchor="middle" font-family="DM Sans,sans-serif">08:00</text>
+              <text x="342" y="132" font-size="9" fill="var(--text3)" text-anchor="middle" font-family="DM Sans,sans-serif">12:00</text>
+              <text x="443" y="132" font-size="9" fill="var(--text3)" text-anchor="middle" font-family="DM Sans,sans-serif">16:00</text>
+              <text x="543" y="132" font-size="9" fill="var(--text3)" text-anchor="middle" font-family="DM Sans,sans-serif">20:00</text>
+              <text x="575" y="132" font-size="9" fill="var(--chart-line)" text-anchor="middle" font-family="DM Sans,sans-serif" font-weight="500">Now</text>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Cross-section visualization -->
+        <div class="viz-card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Visualisasi Potongan Melintang</div>
+              <div class="card-meta">Posisi sensor instrumentasi pada tubuh bendungan</div>
+            </div>
+          </div>
+          <div class="viz-tabs">
+            <div class="viz-tab active">STA. 0+180</div>
+            <div class="viz-tab">STA. 0+116</div>
+          </div>
+          <div style="padding:16px;background:var(--surface2)">
+            <svg viewBox="0 0 580 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block">
+              <!-- dam cross section sketch -->
+              <line x1="30" y1="50" x2="30" y2="180" stroke="var(--text3)" stroke-width="0.5"/>
+              <text x="25" y="55" font-size="7" fill="var(--text3)" text-anchor="end" font-family="DM Mono,sans-serif">130</text>
+              <text x="25" y="80" font-size="7" fill="var(--text3)" text-anchor="end" font-family="DM Mono,sans-serif">120</text>
+              <text x="25" y="105" font-size="7" fill="var(--text3)" text-anchor="end" font-family="DM Mono,sans-serif">110</text>
+              <text x="25" y="130" font-size="7" fill="var(--text3)" text-anchor="end" font-family="DM Mono,sans-serif">100</text>
+              <text x="25" y="155" font-size="7" fill="var(--text3)" text-anchor="end" font-family="DM Mono,sans-serif">90</text>
+              <text x="25" y="180" font-size="7" fill="var(--text3)" text-anchor="end" font-family="DM Mono,sans-serif">80</text>
+              <!-- dam body -->
+              <polygon points="35,180 165,55 290,40 415,55 545,180" fill="var(--surface)" stroke="var(--border)" stroke-width="1"/>
+              <!-- core zone -->
+              <polygon points="265,60 290,40 315,60 295,180 275,180" fill="var(--surface2)" stroke="var(--border)" stroke-width="0.8"/>
+              <text x="290" y="35" font-size="8" fill="var(--text2)" text-anchor="middle" font-family="DM Sans,sans-serif">CL BENDUNGAN</text>
+              <!-- water level line -->
+              <line x1="35" y1="80" x2="290" y2="80" stroke="var(--accent)" stroke-width="1" stroke-dasharray="5,3" opacity="0.7"/>
+              <text x="40" y="77" font-size="7" fill="var(--accent)" font-family="DM Mono,sans-serif">HWL 93.50</text>
+              <!-- sensors (piezometers) -->
+              <g>
+                <circle cx="285" cy="65" r="5" fill="var(--green)" stroke="white" stroke-width="1.5"/><text x="285" y="55" font-size="6.5" fill="var(--text2)" text-anchor="middle" font-family="DM Sans,sans-serif">EP20</text>
+                <circle cx="270" cy="80" r="5" fill="var(--green)" stroke="white" stroke-width="1.5"/><text x="255" y="77" font-size="6.5" fill="var(--text2)" text-anchor="middle" font-family="DM Sans,sans-serif">EP18</text>
+                <circle cx="302" cy="80" r="5" fill="var(--green)" stroke="white" stroke-width="1.5"/><text x="316" y="77" font-size="6.5" fill="var(--text2)" text-anchor="middle" font-family="DM Sans,sans-serif">EP19</text>
+                <circle cx="255" cy="100" r="5" fill="var(--green)" stroke="white" stroke-width="1.5"/><text x="240" y="97" font-size="6.5" fill="var(--text2)" text-anchor="middle" font-family="DM Sans,sans-serif">EP13</text>
+                <circle cx="272" cy="100" r="5" fill="var(--green)" stroke="white" stroke-width="1.5"/><text x="272" y="91" font-size="6.5" fill="var(--text2)" text-anchor="middle" font-family="DM Sans,sans-serif">EP14</text>
+                <circle cx="310" cy="100" r="5" fill="var(--green)" stroke="white" stroke-width="1.5"/><text x="325" y="97" font-size="6.5" fill="var(--text2)" text-anchor="middle" font-family="DM Sans,sans-serif">EP15</text>
+                <circle cx="360" cy="105" r="5" fill="var(--green)" stroke="white" stroke-width="1.5"/><text x="375" y="102" font-size="6.5" fill="var(--text2)" text-anchor="middle" font-family="DM Sans,sans-serif">EP17</text>
+                <circle cx="275" cy="130" r="5" fill="var(--green)" stroke="white" stroke-width="1.5"/><text x="260" y="127" font-size="6.5" fill="var(--text2)" text-anchor="middle" font-family="DM Sans,sans-serif">EP10</text>
+                <circle cx="295" cy="130" r="5" fill="var(--green)" stroke="white" stroke-width="1.5"/><text x="295" y="121" font-size="6.5" fill="var(--text2)" text-anchor="middle" font-family="DM Sans,sans-serif">EP11</text>
+              </g>
+              <!-- legend -->
+              <circle cx="38" cy="193" r="5" fill="var(--green)" stroke="white" stroke-width="1.5"/>
+              <text x="48" y="196" font-size="8" fill="var(--text2)" font-family="DM Sans,sans-serif">Piezometer Online</text>
+              <circle cx="145" cy="193" r="5" fill="var(--red)" stroke="white" stroke-width="1.5"/>
+              <text x="155" y="196" font-size="8" fill="var(--text2)" font-family="DM Sans,sans-serif">Piezometer Offline</text>
+              <text x="400" y="196" font-size="8" fill="var(--text2)" font-family="DM Sans,sans-serif">9 sensor · Update: 0d lalu</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  function showPage(name) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('page-' + name).classList.add('active');
+    document.getElementById('nav-' + name).classList.add('active');
+    const titles = {
+      dashboard: ['Dashboard', 'Overview monitoring real-time bendungan'],
+      sensor: ['Data Sensor Real-time', 'Bendungan Bringin Sila']
+    };
+    document.querySelector('.topbar-title').textContent = titles[name][0];
+    document.querySelector('.topbar-sub').textContent = titles[name][1];
+  }
+
+  function toggleTheme() {
+    document.getElementById('app').classList.toggle('dark');
+  }
+
+  function updateClock() {
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2,'0');
+    const m = String(now.getMinutes()).padStart(2,'0');
+    document.getElementById('clock').textContent = h + ':' + m;
+  }
+  updateClock();
+  setInterval(updateClock, 10000);
+
+  document.querySelectorAll('.period-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      this.closest('.period-btns').querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+      this.closest('.tab-row').querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+  document.querySelectorAll('.sensor-chip').forEach(chip => {
+    chip.addEventListener('click', function() { this.classList.toggle('active'); });
+  });
+  document.querySelectorAll('.viz-tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+      this.closest('.viz-tabs').querySelectorAll('.viz-tab').forEach(t => t.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>
