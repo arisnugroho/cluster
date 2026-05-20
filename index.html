@@ -374,6 +374,77 @@ body.dark{
 .nw-val.purple{color:var(--purple)}
 .nw-val.amber{color:var(--amber)}
 
+/* ===================== STORAGE PAGE ===================== */
+.st-kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+.st-toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.st-search{
+  display:flex;align-items:center;gap:8px;
+  background:var(--bg3);border:1px solid var(--border2);
+  border-radius:var(--radius-sm);padding:7px 12px;flex:1;max-width:260px;
+  transition:border-color .2s;
+}
+.st-search:focus-within{border-color:var(--green)}
+.st-search input{background:none;border:none;outline:none;font-size:13px;color:var(--text);font-family:inherit;width:100%}
+.st-search input::placeholder{color:var(--text3)}
+.st-sel{
+  background:var(--bg3);border:1px solid var(--border2);
+  border-radius:var(--radius-sm);padding:7px 11px;
+  font-size:13px;color:var(--text);font-family:inherit;cursor:pointer;outline:none;
+  transition:border-color .2s;
+}
+.st-sel:focus{border-color:var(--green)}
+.view-tog{display:flex;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius-sm);overflow:hidden}
+.vt{width:34px;height:34px;border:none;background:none;cursor:pointer;color:var(--text3);display:flex;align-items:center;justify-content:center;transition:.15s}
+.vt.on{background:var(--bg2);color:var(--green)}
+.vt:hover:not(.on){color:var(--text)}
+.upload-zone{
+  border:1.5px dashed var(--border2);border-radius:var(--radius);
+  background:var(--bg2);padding:24px 20px;text-align:center;
+  cursor:pointer;transition:all .2s;margin-bottom:18px;display:none;
+}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--green);background:var(--green-l)}
+.uz-icon{width:46px;height:46px;border-radius:13px;background:var(--green-l);color:var(--green);display:flex;align-items:center;justify-content:center;margin:0 auto 10px}
+.uz-icon svg{width:22px;height:22px}
+.uz-title{font-size:13.5px;font-weight:600;color:var(--text);margin-bottom:3px}
+.uz-sub{font-size:11.5px;color:var(--text3)}
+.file-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(178px,1fr));gap:12px}
+.fc{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:var(--radius);overflow:hidden;
+  cursor:pointer;transition:border-color .2s,box-shadow .2s;
+}
+.fc:hover{border-color:var(--green);box-shadow:var(--shadow)}
+.fc-thumb{height:108px;display:flex;align-items:center;justify-content:center;position:relative}
+.fc-thumb.tg{background:var(--green-l)}
+.fc-thumb.tr{background:var(--red-l)}
+.fc-thumb.ta{background:var(--amber-l)}
+.fc-thumb.tp{background:var(--purple-l)}
+.fc-thumb.tb{background:var(--blue-l)}
+.fc-ext{position:absolute;top:8px;right:8px;font-size:9px;font-weight:800;padding:2px 7px;border-radius:6px;background:var(--bg2);border:1px solid var(--border);color:var(--text2);letter-spacing:.03em}
+.fc-body{padding:10px 12px;border-bottom:1px solid var(--border)}
+.fc-name{font-size:12.5px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px}
+.fc-date{font-size:11px;color:var(--text3);margin-bottom:6px}
+.fc-actions{display:flex;gap:5px;padding:8px 10px}
+.fca{height:28px;border-radius:var(--radius-xs);border:1px solid var(--border);background:none;cursor:pointer;font-size:11px;font-weight:500;color:var(--text2);display:flex;align-items:center;justify-content:center;gap:4px;transition:.15s;font-family:inherit;flex:1}
+.fca:hover{background:var(--bg3);color:var(--text)}
+.fca.ic{flex:none;width:28px}
+.fca.del:hover{background:var(--red-l);color:var(--red);border-color:transparent}
+.fl-row{display:flex;align-items:center;gap:12px;padding:11px 18px;border-bottom:1px solid var(--border);transition:background .15s;cursor:pointer}
+.fl-row:last-child{border-bottom:none}
+.fl-row:hover{background:var(--bg3)}
+.fl-ic{width:38px;height:38px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.fl-body{flex:1;min-width:0}
+.fl-name{font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fl-meta{font-size:11px;color:var(--text3);margin-top:2px;display:flex;align-items:center;gap:6px}
+.fl-right{display:flex;align-items:center;gap:5px;flex-shrink:0}
+.fl-size{font-size:11px;color:var(--text3);min-width:44px;text-align:right}
+.st-empty{text-align:center;padding:52px 20px}
+.st-empty-icon{width:52px;height:52px;background:var(--bg3);border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
+.st-empty p{font-size:13.5px;font-weight:600;color:var(--text2);margin-bottom:4px}
+.st-empty span{font-size:12px;color:var(--text3)}
+.month-sep{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;padding:14px 0 8px;border-bottom:1px solid var(--border);margin-bottom:12px}
+.month-sep:not(:first-child){margin-top:8px}
+
 /* RESPONSIVE */
 @media(max-width:1100px){
   .grid-4{grid-template-columns:repeat(2,1fr)}
@@ -464,6 +535,9 @@ body.dark{
       </button>
       <button class="nav-item" id="nav-warga" onclick="showPage('warga',this)" style="display:none">
         <span class="icon-svg"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><path d="M21 21v-2a4 4 0 0 0-3-3.85"/></svg></span>Data Warga
+      </button>
+      <button class="nav-item" onclick="showPage('storage',this)">
+        <span class="icon-svg"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg></span>Storage
       </button>
     </div>
     <div class="sb-footer">
@@ -899,6 +973,82 @@ body.dark{
         </div>
       </div>
 
+      <!-- ====== PAGE: STORAGE ====== -->
+      <div class="page" id="page-storage">
+        <div class="page-header">
+          <div>
+            <div class="page-h">Storage Bukti Transaksi</div>
+            <div class="page-s">Semua bukti tersimpan di Google Drive · 15 GB gratis</div>
+          </div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-ghost" onclick="showToast('Export daftar file ke PDF — tersedia setelah integrasi backend.')">
+              <span class="icon-svg"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>Export
+            </button>
+            <button class="btn btn-primary" onclick="toggleUpload()">
+              <span class="icon-svg"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></span>Upload Bukti
+            </button>
+          </div>
+        </div>
+
+        <!-- KPI Cards -->
+        <div class="st-kpi" id="st-kpi"></div>
+
+        <!-- Upload Zone -->
+        <div class="upload-zone" id="upload-zone"
+          ondragover="event.preventDefault();this.classList.add('drag')"
+          ondragleave="this.classList.remove('drag')"
+          ondrop="event.preventDefault();this.classList.remove('drag');showToast('File diterima — akan diupload ke Google Drive (backend coming soon).')"
+          onclick="showToast('Upload ke Google Drive — tersedia setelah integrasi backend.')">
+          <div class="uz-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          </div>
+          <div class="uz-title">Klik atau drag & drop file di sini</div>
+          <div class="uz-sub">JPG, PNG, PDF · maks 10 MB per file · tersimpan otomatis ke Google Drive</div>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="st-toolbar">
+          <div class="st-search">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input id="st-q" placeholder="Cari nama file, blok, keterangan…" oninput="renderStorage()">
+          </div>
+          <select class="st-sel" id="st-bulan" onchange="renderStorage()">
+            <option value="">Semua bulan</option>
+            <option value="5" selected>Mei 2026</option>
+            <option value="4">Apr 2026</option>
+            <option value="3">Mar 2026</option>
+            <option value="2">Feb 2026</option>
+            <option value="1">Jan 2026</option>
+          </select>
+          <select class="st-sel" id="st-kat" onchange="renderStorage()">
+            <option value="">Semua kategori</option>
+            <option value="iuran">Iuran masuk</option>
+            <option value="keluar">Pengeluaran</option>
+            <option value="sosial">Dana sosial</option>
+          </select>
+          <select class="st-sel" id="st-ext" onchange="renderStorage()">
+            <option value="">Semua tipe</option>
+            <option value="IMG">Gambar (JPG/PNG)</option>
+            <option value="PDF">Dokumen (PDF)</option>
+          </select>
+          <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+            <span id="st-count" style="font-size:12px;color:var(--text3)"></span>
+            <div class="view-tog">
+              <button class="vt on" id="vt-grid" onclick="setStView('grid',this)" title="Grid">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+              </button>
+              <button class="vt" id="vt-list" onclick="setStView('list',this)" title="List">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Content area -->
+        <div class="card" style="padding:0;overflow:hidden" id="st-content"></div>
+
+      </div><!-- /page-storage -->
+
     </div><!-- /content -->
   </div><!-- /main-wrap -->
 </div><!-- /app -->
@@ -1041,9 +1191,10 @@ function showPage(id, navEl){
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
   if(navEl) navEl.classList.add('active');
-  const titles={dashboard:'Dashboard keuangan',ipl:'IPL Bulanan',transaksi:'Semua Transaksi',laporan:'Laporan Keuangan',warga:'Data Warga'};
+  const titles={dashboard:'Dashboard keuangan',ipl:'IPL Bulanan',transaksi:'Semua Transaksi',laporan:'Laporan Keuangan',warga:'Data Warga',storage:'Storage Bukti Transaksi'};
   document.getElementById('topbar-title').textContent = titles[id]||id;
   if(id==='laporan') setTimeout(initBalanceChart,80);
+  if(id==='storage') setTimeout(renderStorage,60);
 }
 
 /* ===================== TOGGLE AMOUNTS ===================== */
@@ -1351,6 +1502,172 @@ function toggleDark(){
 /* ===================== DASHBOARD REFRESH ===================== */
 function refreshDashboard(){
   showToast('Data diperbarui untuk periode yang dipilih (Mock)');
+}
+
+/* ===================== STORAGE ===================== */
+const ST_FILES = [
+  {id:1, name:'bukti-gaji-ripai-mei-2026.jpg',  kat:'keluar', bulan:5, tgl:'01 Mei 2026', blok:'–',   ket:'Gaji satpam Mei',         size:1.2, ext:'IMG'},
+  {id:2, name:'transfer-a2-bahtiar-mei.jpg',     kat:'iuran',  bulan:5, tgl:'02 Mei 2026', blok:'A2',  ket:'Iuran Bahtiar Mei',       size:0.8, ext:'IMG'},
+  {id:3, name:'transfer-a3-arief-mei.jpg',       kat:'iuran',  bulan:5, tgl:'02 Mei 2026', blok:'A3',  ket:'Iuran Arief Mei',         size:0.9, ext:'IMG'},
+  {id:4, name:'kwitansi-kebersihan-mei.pdf',     kat:'keluar', bulan:5, tgl:'03 Mei 2026', blok:'–',   ket:'Kebersihan Mei',          size:0.4, ext:'PDF'},
+  {id:5, name:'bukti-sosial-f1-mei.jpg',         kat:'sosial', bulan:5, tgl:'04 Mei 2026', blok:'F1',  ket:'Dana sosial F1',          size:1.1, ext:'IMG'},
+  {id:6, name:'nota-penggantian-lampu.pdf',      kat:'keluar', bulan:5, tgl:'05 Mei 2026', blok:'–',   ket:'Penggantian lampu 6 titik',size:0.6,ext:'PDF'},
+  {id:7, name:'transfer-b4-dian-mei.jpg',        kat:'iuran',  bulan:5, tgl:'06 Mei 2026', blok:'B4',  ket:'Iuran Dian Mei',          size:0.7, ext:'IMG'},
+  {id:8, name:'bukti-sosial-h2-mei.jpg',         kat:'sosial', bulan:5, tgl:'07 Mei 2026', blok:'H2',  ket:'Dana sosial H2',          size:0.9, ext:'IMG'},
+  {id:9, name:'transfer-c10-ahdiyat-mei.jpg',    kat:'iuran',  bulan:5, tgl:'08 Mei 2026', blok:'C10', ket:'Iuran Ahdiyat Mei',       size:0.8, ext:'IMG'},
+  {id:10,name:'nota-cctv-konsumsi-pos.pdf',      kat:'keluar', bulan:5, tgl:'10 Mei 2026', blok:'–',   ket:'CCTV & konsumsi pos',     size:0.3, ext:'PDF'},
+  {id:11,name:'bukti-gaji-ripai-apr-2026.jpg',   kat:'keluar', bulan:4, tgl:'01 Apr 2026', blok:'–',   ket:'Gaji satpam April',       size:1.1, ext:'IMG'},
+  {id:12,name:'kwitansi-sampah-apr.pdf',         kat:'keluar', bulan:4, tgl:'03 Apr 2026', blok:'–',   ket:'Kebersihan April',        size:0.3, ext:'PDF'},
+  {id:13,name:'transfer-b14-budi-apr.jpg',       kat:'iuran',  bulan:4, tgl:'04 Apr 2026', blok:'B14', ket:'Iuran Budi April',        size:0.8, ext:'IMG'},
+  {id:14,name:'bukti-sosial-e1-apr.jpg',         kat:'sosial', bulan:4, tgl:'05 Apr 2026', blok:'E1',  ket:'Dana sosial E1',          size:1.0, ext:'IMG'},
+  {id:15,name:'transfer-a6-fauzi-apr.jpg',       kat:'iuran',  bulan:4, tgl:'06 Apr 2026', blok:'A6',  ket:'Iuran Fauzi April',       size:0.7, ext:'IMG'},
+  {id:16,name:'bukti-gaji-ripai-mar-2026.jpg',   kat:'keluar', bulan:3, tgl:'01 Mar 2026', blok:'–',   ket:'Gaji satpam Maret',       size:1.2, ext:'IMG'},
+  {id:17,name:'kwitansi-kebersihan-mar.pdf',     kat:'keluar', bulan:3, tgl:'02 Mar 2026', blok:'–',   ket:'Kebersihan Maret',        size:0.4, ext:'PDF'},
+  {id:18,name:'transfer-b3-fajar-mar.jpg',       kat:'iuran',  bulan:3, tgl:'03 Mar 2026', blok:'B3',  ket:'Iuran Fajar Maret',       size:0.8, ext:'IMG'},
+];
+
+const ST_KAT_LABEL = {iuran:'Iuran masuk', keluar:'Pengeluaran', sosial:'Dana sosial'};
+const ST_KAT_CLS   = {iuran:'pill-green',  keluar:'pill-red',    sosial:'pill-amber'};
+const ST_THUMB_CLS = {iuran:'tg', keluar:'tr', sosial:'tp'};
+const ST_ICON_CLS  = {iuran:'ki-green', keluar:'ki-red', sosial:'ki-purple'};
+const ST_MONTHS    = {1:'Jan 2026',2:'Feb 2026',3:'Mar 2026',4:'Apr 2026',5:'Mei 2026'};
+
+let stView = 'grid';
+
+function toggleUpload(){
+  const z = document.getElementById('upload-zone');
+  z.style.display = z.style.display === 'none' || z.style.display === '' ? 'block' : 'none';
+}
+
+function setStView(v, btn){
+  stView = v;
+  document.querySelectorAll('.vt').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  renderStorage();
+}
+
+function stFiltered(){
+  const q = (document.getElementById('st-q')||{}).value||'';
+  const b = (document.getElementById('st-bulan')||{}).value||'';
+  const k = (document.getElementById('st-kat')||{}).value||'';
+  const e = (document.getElementById('st-ext')||{}).value||'';
+  return ST_FILES.filter(f=>{
+    const mq = !q || [f.name,f.blok,f.ket].join(' ').toLowerCase().includes(q.toLowerCase());
+    const mb = !b || f.bulan == b;
+    const mk = !k || f.kat === k;
+    const me = !e || f.ext === e;
+    return mq && mb && mk && me;
+  });
+}
+
+function fmtSize(mb){ return mb >= 1 ? mb.toFixed(1)+' MB' : (mb*1000).toFixed(0)+' KB'; }
+
+function fileIconSVG(ext){
+  if(ext==='PDF') return '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:.55"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/><polyline points="9 9 10 9"/></svg>';
+  return '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:.55"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>';
+}
+
+function renderStorageKPI(data){
+  const el = document.getElementById('st-kpi');
+  if(!el) return;
+  const totalMB = ST_FILES.reduce((a,f)=>a+f.size,0).toFixed(1);
+  const iuranN  = data.filter(f=>f.kat==='iuran').length;
+  const keluarN = data.filter(f=>f.kat==='keluar').length;
+  const sosialN = data.filter(f=>f.kat==='sosial').length;
+  el.innerHTML = [
+    {icon:'ki-green', label:'Total file (filter)', val:data.length+' file'},
+    {icon:'ki-green', label:'Iuran masuk',  val:iuranN+' file'},
+    {icon:'ki-red',   label:'Pengeluaran',  val:keluarN+' file'},
+    {icon:'ki-purple',label:'Storage terpakai', val:totalMB+' MB / 15 GB'},
+  ].map(c=>`
+    <div class="card">
+      <div class="kpi-icon ${c.icon}" style="width:34px;height:34px;border-radius:10px;margin-bottom:10px">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/></svg>
+      </div>
+      <div class="kpi-label">${c.label}</div>
+      <div class="kpi-val" style="font-size:19px">${c.val}</div>
+    </div>`).join('');
+}
+
+function renderStorage(){
+  const data = stFiltered();
+  renderStorageKPI(data);
+  const cnt = document.getElementById('st-count');
+  if(cnt) cnt.textContent = data.length + ' file';
+  const el = document.getElementById('st-content');
+  if(!el) return;
+
+  if(!data.length){
+    el.innerHTML = `<div class="st-empty">
+      <div class="st-empty-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text3)"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/></svg>
+      </div>
+      <p>Tidak ada file ditemukan</p>
+      <span>Coba ubah filter atau upload bukti baru</span>
+    </div>`;
+    return;
+  }
+
+  if(stView === 'grid'){
+    // Group by month
+    const byMonth = {};
+    data.forEach(f=>{ if(!byMonth[f.bulan]) byMonth[f.bulan]=[]; byMonth[f.bulan].push(f); });
+    const months = Object.keys(byMonth).sort((a,b)=>b-a);
+    el.innerHTML = '<div style="padding:16px 18px">' + months.map(m=>`
+      <div class="month-sep">${ST_MONTHS[m]||('Bulan '+m)} · ${byMonth[m].length} file</div>
+      <div class="file-grid" style="margin-bottom:8px">
+        ${byMonth[m].map(f=>`
+          <div class="fc">
+            <div class="fc-thumb ${ST_THUMB_CLS[f.kat]||''}">
+              ${fileIconSVG(f.ext)}
+              <span class="fc-ext">${f.ext}</span>
+            </div>
+            <div class="fc-body">
+              <div class="fc-name" title="${f.name}">${f.name}</div>
+              <div class="fc-date">${f.tgl}${f.blok!=='–'?' · Blok '+f.blok:''}</div>
+              <span class="pill ${ST_KAT_CLS[f.kat]}">${ST_KAT_LABEL[f.kat]}</span>
+            </div>
+            <div class="fc-actions">
+              <button class="fca" onclick="showToast('Preview: ${f.name}')">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                Lihat
+              </button>
+              <button class="fca ic" title="Download" onclick="showToast('Download: ${f.name}')">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              </button>
+              <button class="fca ic del" title="Hapus" onclick="if(confirm('Hapus file ${f.name}?'))showToast('File dihapus dari Google Drive.')">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+              </button>
+            </div>
+          </div>`).join('')}
+      </div>`).join('') + '</div>';
+  } else {
+    // List view
+    el.innerHTML = data.map(f=>`
+      <div class="fl-row">
+        <div class="fl-ic ${ST_ICON_CLS[f.kat]||'ki-blue'}">${fileIconSVG(f.ext)}</div>
+        <div class="fl-body">
+          <div class="fl-name">${f.name}</div>
+          <div class="fl-meta">
+            ${f.tgl}
+            ${f.blok!=='–'?'· Blok '+f.blok:''}
+            · <span class="pill ${ST_KAT_CLS[f.kat]}" style="font-size:10px;padding:1px 8px">${ST_KAT_LABEL[f.kat]}</span>
+          </div>
+        </div>
+        <div class="fl-right">
+          <span class="fl-size">${fmtSize(f.size)}</span>
+          <button class="fca ic" title="Lihat" onclick="showToast('Preview: ${f.name}')">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+          <button class="fca ic" title="Download" onclick="showToast('Download: ${f.name}')">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          </button>
+          <button class="fca ic del" title="Hapus" onclick="if(confirm('Hapus file?'))showToast('File dihapus dari Google Drive.')">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+          </button>
+        </div>
+      </div>`).join('');
+  }
 }
 
 /* ===================== INIT ===================== */
